@@ -12,10 +12,20 @@ void setup() {
   // in the size() method. In this program, the size of the image
   // is 640 x 360 pixels.
   bg = loadImage("sample.jpg");
+  image(bg,0,0);
 }
 
+
+
+
 void draw() {
-  background(bg);
+  
+  if(mousePressed){
+    image(bg,0,0);
+    ellipse(mouseX,mouseY,40,40); 
+  }else{
+    bg = get();
+  }
   
   
 }
