@@ -7,6 +7,9 @@ To be edited for submission
 PImage bg;
 int shape = 1;
 int size =40;
+int tempSize;
+char m;
+float scale = 1;
 
 void setup() {
   size(960, 720);
@@ -32,13 +35,55 @@ void star(float x, float y, float radius1, float radius2, int npoints) {
   endShape(CLOSE);
 }
 
+void android(float x, float y, float s){
+  scale(s);
+  beginShape();
+  noStroke(); // remove borders
+  fill(164,198,57); // android color
+  
+  arc(x, y, 280, 200, PI, TWO_PI); // hed 282 200
+  rect(x-140, y+12, 280, 235, 0,0,50,50); // bod
+  rect(x-200,y+10,50,150, 20); // left arm
+  rect(x+151,y+10,50,150, 20); // right arm
+  rect(x-87,y+180,50,150, 20); // left leg
+  rect(x+38,y+180,50,150, 20); // right leg
+  
+  pushMatrix();
+  translate(x-75,y-123);
+  rotate(PI/2.7); // rotate left antenna
+  rect(0,0,50,10,10); // left antenna
+  popMatrix();
+  
+  pushMatrix();
+  translate(x+80,y-120);
+  rotate(PI/2.7); 
+  rotate(PI/3.6); // rotate right antenna
+  rect(0,0,50,10,10); // right antenna
+  popMatrix();
+  
+  fill(255);                 //white fill
+  //rect(130, 200, 300, 10); // line seperating neck
+  circle(x-62, y-40, 25); // left eye
+  circle(x+58, y-40, 25); // right eye
+  
+  stroke(1);
+  endShape(CLOSE);
+}
+
 void draw() {
   if(key == '1') shape = 1;
   if(key == '2') shape = 2;
   if(key == '3') shape = 3;
   if(key == '4') shape = 4;
-  if(key == '5' && size > 0) size -= 1;
-  if(key == '6') size += 1;
+  if(key == '5') shape = 5;
+  if(key == '6'){ 
+    if(size > 1) size -= 1;
+    if(scale > 0.1) scale -=0.005;
+  }
+  if(key == '7'){
+    if(size < 1000) size += 1;
+    if(scale<4) scale += 0.005;
+  }
   
   if(mousePressed){
     image(bg,0,0);
@@ -55,8 +100,14 @@ void draw() {
       case 4: 
         triangle(mouseX, mouseY, mouseX+size, mouseY+size, mouseX-size, mouseY+size);
         break;
+      case 5: 
+        android(mouseX/scale, mouseY/scale, scale);
+        break;
     }
   }else{
     bg = get();
+    size = 40;
+    scale = 1;
+    key = m;
   }
 }
