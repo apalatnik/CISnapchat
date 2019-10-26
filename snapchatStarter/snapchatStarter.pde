@@ -4,6 +4,10 @@ Snapchat starter sketch
 To be edited for submission
 */
 
+import ddf.minim.*;
+
+Minim minim;
+AudioPlayer skrrt;
 PImage bg;
 int shape = 1;
 int size =40;
@@ -18,6 +22,8 @@ void setup() {
   // is 640 x 360 pixels.
   bg = loadImage("sample.jpg");
   image(bg,0,0);
+  minim = new Minim(this);
+  skrrt = minim.loadFile("skrrt.mp3");
 }
 
 void star(float x, float y, float radius1, float radius2, int npoints) {
@@ -71,6 +77,7 @@ void android(float x, float y, float s){
 }
 
 void draw() {
+  
   if(key == '1') shape = 1;
   if(key == '2') shape = 2;
   if(key == '3') shape = 3;
@@ -83,6 +90,12 @@ void draw() {
   if(key == '7'){
     if(size < 1000) size += 1;
     if(scale<4) scale += 0.005;
+  }
+  if(key == 's' && !skrrt.isPlaying()) {
+    skrrt.loop();
+  }else if(key == 'p' && skrrt.isPlaying()){
+    skrrt.pause();
+    skrrt.rewind();
   }
   
   if(mousePressed){
@@ -103,6 +116,7 @@ void draw() {
       case 5: 
         android(mouseX/scale, mouseY/scale, scale);
         break;
+      
     }
   }else{
     bg = get();
