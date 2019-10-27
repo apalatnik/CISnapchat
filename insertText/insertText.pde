@@ -1,10 +1,7 @@
 /*
 sources:
 -http://learningprocessing.com/examples/chp18/example-18-01-userinput
-<<<<<<< Updated upstream
-=======
 -https://amnonp5.wordpress.com/2012/01/28/25-life-saving-tips-for-processing/
->>>>>>> Stashed changes
 */
 
 //Global Variables
@@ -27,24 +24,6 @@ void draw(){
   //Prompt user
   text("Enter text here.",indent,40);
   text(userInput,indent,190);
-<<<<<<< Updated upstream
-  text(savedInput,indent,230);
-}
-
-void keyPressed(){
- //If ENTER key is pressed, save the string and clear it
- if(key == '\n'){
-   savedInput = userInput;
-   //Clear string by setting userInput = "";
-   userInput = "";
- }//end if
- else{
-   //Concatenate string
-   //Each character is added to the string
-   userInput = userInput + key;
- }//end else
-}//end keyPressed()
-=======
 }
 
 void keyPressed() {
@@ -58,4 +37,3 @@ void keyPressed() {
     userInput = userInput + key;
   }
 }
->>>>>>> Stashed changes
