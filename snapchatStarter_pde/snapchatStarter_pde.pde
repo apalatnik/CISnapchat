@@ -5,42 +5,83 @@ To be edited for submission
 */
 
 PImage bg;
+PImage bg2;
 Undo undo;
 boolean controlDown = false;
 boolean shiftDown = false;
 boolean boolClick = false;
+PFont f;
+String userInput = "";
+String savedInput = "";
+int indent = 25;
+int lastPressed;
 
 void setup() {
   size(960, 720);
   // The background image must be the same size as the parameters
   // in the size() method. In this program, the size of the image
   // is 640 x 360 pixels.
-  bg = loadImage("sample.jpg");//image
+  bg = loadImage("sample.jpg");
+  bg2 = loadImage("sample.jpg");//image
   frameRate(90);
   image(bg,0,0);
   undo = new Undo(10);
+  f = createFont("Arial",24);
   
 }
 char keychar = 0;
-int x = 0;//char value for switch statement
+char keychar2 = 0;
+int x = 1;//char value for switch statement
 void draw() {
   
+  if(keyPressed)
+  {
+    if(key == '0')
+    {
+      keychar = key;
+    }
+    if(key == '1')
+    {
+      keychar = key;
+    }
+    if(key == '2')
+    {
+      keychar = key;
+    }
+    if(key == '3')
+    {
+      keychar = key;
+    }
+    if(key == '4')
+    {
+      keychar = key;
+    }
+     if(key == '5')
+    {
+      keychar = key;
+    }
+    if(key == '6')
+    {
+      keychar = key;
+    }
+  }
   switch(keychar){
 case '0':
       image(bg,0,0);
+      noTint();
   break;
   case '1':
 strokeWeight(10);//test draw method
         if (keyPressed && (key == CODED)) {
           if (keyCode == UP) {
-            x = x + 5;
+            x = x + 1;
             if( x > 255)
             {
               x = 255;
             }
         } 
           else if (keyCode == DOWN) {
-            x = x - 5;
+            x = x - 1;
             if( x < 0)
             {
               x = 0;
@@ -51,7 +92,7 @@ strokeWeight(10);//test draw method
   pushStyle();
   noFill();
   stroke(0);
-  strokeWeight(5);
+  
   
   rect(0,0,30,210);
   popStyle();
@@ -76,7 +117,7 @@ fill(255);
 fill(255);
 
 if(mousePressed == true) {
-  strokeWeight(5);
+  strokeWeight(x);
   line(mouseX,mouseY,pmouseX,pmouseY);
 
   
@@ -141,14 +182,62 @@ case '2':
   else{
     bg = get();
        }
+break;
+case '3':
+  if(key == '3') {   
+    getDate();
+   
   }
+break;
+case '4':
+if(key == '4') {   
+    getTime();
+   
+  }
+break;
+case '5':
+  colorFilter();
+break;
+case '6':
+  //http://learningprocessing.com/examples/chp18/example-18-01-userinput
+  background(255);
+  textFont(f);
+  fill(0);
+
+  //Prompt user
+  text("Enter text here.",indent,40);
+  text(userInput,indent,190);
+  text(savedInput,indent,230);
+  lastPressed = millis();
+  
+  if(keyPressed)
+    
+    if(millis()-lastPressed > 10)
+    {
+     
+      if(key =='\n')
+      {
+        savedInput = userInput;
+   //Clear string by setting userInput = "";
+        userInput = "";
+      }
+      else
+      {
+       //Concatenate string
+       //Each character is added to the string
+       userInput = userInput + key;
+      }
+    }
+break;
+  }
+  
 }
 void mouseClicked(){
   boolClick = true;
 }
-void keyTyped() {
+/*void keyTyped() {
   keychar = key;//set keychar for switch statement
-}
+}*/
 void mouseReleased() {
   // Save each line we draw to our stack of UNDOs
   undo.takeSnapshot();
@@ -187,6 +276,168 @@ void keyReleased() {
       shiftDown = false;
   }
 }
+void getDate() {
+  String monthName = "";
+  stroke(255);
+  textSize(50);
+  
+  //Return the current month as a string value
+  switch(month()){
+    case 1:
+      monthName = "January";
+      break; 
+    case 2:
+      monthName = "February";
+      break;    
+    case 3:
+      monthName = "March";
+      break;    
+    case 4:
+      monthName = "April";
+      break;    
+    case 5:
+      monthName = "May";
+      break;     
+    case 6:
+      monthName = "June";
+      break;   
+    case 7:
+      monthName = "July";
+      break;     
+    case 8:
+      monthName = "August";
+      break;     
+    case 9:
+      monthName = "September";
+      break;     
+    case 10:
+      monthName = "October";
+      break;      
+    case 11:
+      monthName = "November";
+      break;     
+    case 12:
+      monthName = "December";
+      break;
+  }
+  text(monthName + " " + day(), bg.height/2, bg.width/2);
+}
+void getTime() {
+  stroke(255);
+  textSize(50);
+  text(hour() + ":" + minute(), bg.height/2,bg.width/2);
+}
+//Change the image to grayscale 
+void grayscale() {
+  image(bg,0,0);
+  bg.filter(GRAY);
+}
+//Change the image to black and white values
+void blackWhite() {
+  image(bg,0,0);
+  bg.filter(THRESHOLD, 0.55);
+}
+
+//Add a red tint to the image
+void redFilter() {
+  image(bg,0,0);
+  tint(255,0,0); 
+}
+
+//Add a green tint to the image
+void greenFilter() {
+  image(bg,0,0);
+  tint(0,255,0);
+}
+
+//Add a blue tint to the image
+void blueFilter() {
+  image(bg,0,0);
+  tint(0,0,255);
+}
+void colorFilter()
+{
+    if(key == 'r')
+    {
+      keychar2 = key;
+    }
+    if(key == 'g')
+    {
+      keychar2 = key;
+    }
+    if(key == 'b')
+    {
+      keychar2 = key;
+    }
+    if(key == 'h')
+    {
+      keychar2 = key;
+    }
+    if(key == 'j')
+    {
+      keychar2 = key;
+    }
+     if(key == 'o')
+    {
+      keychar2 = key;
+    }
+  
+  switch(keychar2){
+case '0':  
+  image(bg,0,0);
+  noTint();
+  break;
+case 'r':
+  image(bg,0,0);
+  redFilter();
+  break;
+case 'g':
+  image(bg,0,0);
+  greenFilter();
+  break;
+case 'b':
+  image(bg,0,0);
+  blueFilter();
+  break;
+case 'h':
+  image(bg,0,0);
+  grayscale();
+  break;
+case 'j':
+  image(bg,0,0);
+  blackWhite();
+  break;
+  
+  }
+   
+             
+             
+          }
+            
+            
+   
+  /*if(f == 1);
+    {
+      grayscale();
+    }
+    if(f == 2);
+    {
+      blackWhite();
+    }
+    if(f == 3);
+    {
+      redFilter();
+    }
+    if(f == 4);
+    {
+      blueFilter();
+    }
+    if(f == 5);
+    {
+      greenFilter();
+    }*/
+    
+   
 
 
 class Undo {
