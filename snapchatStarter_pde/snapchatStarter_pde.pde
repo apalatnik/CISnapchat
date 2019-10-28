@@ -4,11 +4,16 @@ Snapchat starter sketch
 To be edited for submission
 */
 
+import ddf.minim.*;//sound library
+//global variables
 PImage bg;
 PImage bg2;
-Undo undo;
-boolean controlDown = false;
-boolean shiftDown = false;
+Minim minim;
+AudioPlayer skrrt;
+int shape = 1;
+int size =40;
+float scale = 1;
+char m;
 boolean boolClick = false;
 PFont f;
 String userInput = "";
@@ -22,10 +27,12 @@ void setup() {
   // in the size() method. In this program, the size of the image
   // is 640 x 360 pixels.
   bg = loadImage("sample.jpg");
+  updatePixels();
   bg2 = loadImage("sample.jpg");//image
   frameRate(90);
   image(bg,0,0);
-  undo = new Undo(10);
+  minim = new Minim(this);
+  skrrt = minim.loadFile("skrrt.mp3");
   f = createFont("Arial",24);
   
 }
@@ -64,11 +71,18 @@ void draw() {
     {
       keychar = key;
     }
+    if(key == '7')
+    {
+      keychar = key;
+    }
+    if(key == '8')
+    {
+      keychar = key;
+    }
   }
   switch(keychar){
 case '0':
-      image(bg,0,0);
-      noTint();
+      image(bg2,0,0);
   break;
   case '1':
 strokeWeight(10);//test draw method
@@ -173,14 +187,46 @@ if(mousePressed == true) {
   break;
 case '2':
   
-  
+  if(key == 'c') shape = 1;
+  if(key == 'a') shape = 2;
+  if(key == 'v') shape = 3;
+  if(key == 't') shape = 4;
+  if(key == 'a') shape = 5;
+  if(key == '-'){ 
+    if(size > 1) size -= 1;
+    if(scale > 0.1) scale -=0.005;
+  }
+  if(key == '+'){
+    if(size < 1000) size += 1;
+    if(scale<4) scale += 0.005;
+  }
   if(mousePressed)
   {
     image(bg,0,0);
-    ellipse(mouseX,mouseY,40,40); 
+    switch(shape){
+      case 1:
+        ellipse(mouseX,mouseY,size,size); 
+        break;
+      case 2:
+        square(mouseX-size/2,mouseY-size/2, size);
+        break;
+      case 3: 
+        star(mouseX, mouseY, size/2, size, shape*2);
+        break;
+      case 4: 
+        triangle(mouseX, mouseY, mouseX+size, mouseY+size, mouseX-size, mouseY+size);
+        break;
+      case 5: 
+        android(mouseX/scale, mouseY/scale, scale);
+        break;
+      
+    }
   }
   else{
     bg = get();
+    size = 40;
+    scale = 1;
+    key = m;
        }
 break;
 case '3':
@@ -200,34 +246,15 @@ case '5':
 break;
 case '6':
   //http://learningprocessing.com/examples/chp18/example-18-01-userinput
-  background(255);
   textFont(f);
   fill(0);
-
-  //Prompt user
-  text("Enter text here.",indent,40);
-  text(userInput,indent,190);
-  text(savedInput,indent,230);
-  lastPressed = millis();
-  
-  if(keyPressed)
-    
-    if(millis()-lastPressed > 10)
-    {
-     
-      if(key =='\n')
-      {
-        savedInput = userInput;
-   //Clear string by setting userInput = "";
-        userInput = "";
-      }
-      else
-      {
-       //Concatenate string
-       //Each character is added to the string
-       userInput = userInput + key;
-      }
-    }
+  text(userInput,indent,650);
+break;
+case '7':
+  colorTint();
+break;
+case '8':
+  Audio();//plays music
 break;
   }
   
@@ -235,45 +262,19 @@ break;
 void mouseClicked(){
   boolClick = true;
 }
-/*void keyTyped() {
-  keychar = key;//set keychar for switch statement
-}*/
-void mouseReleased() {
-  // Save each line we draw to our stack of UNDOs
-  undo.takeSnapshot();
-}
-
 void keyPressed() {
-  // Remember if CTRL or SHIFT are pressed or not
-  if (key == CODED) {
-    if (keyCode == CONTROL) 
-      controlDown = true;
-    if (keyCode == SHIFT)
-      shiftDown = true;
-    return;
-  } 
-  // Check if we pressed CTRL+Z or CTRL+SHIFT+Z
-  if (controlDown) {
-    if (keyCode == 'Z') {
-      if (shiftDown)
-        undo.redo();
-      else
-        undo.undo();
+  push();
+  fill(255);
+  rect(0,620,960,720);
+  pop();
+  if (keyCode == BACKSPACE) {
+    if (userInput.length() > 0) {
+      userInput = userInput.substring(0, userInput.length()-1);
     }
-    return;
-  } 
-  // Check if we pressed the S key
-  if (key=='s') {
-    saveFrame("image####.png");
-  }
-}
-void keyReleased() {
-  // Remember if CTRL or SHIFT are pressed or not
-  if (key == CODED) {
-    if (keyCode == CONTROL) 
-      controlDown = false;
-    if (keyCode == SHIFT)
-      shiftDown = false;
+  } else if (keyCode == DELETE) {
+    userInput = "";
+  } else if (keyCode != SHIFT && keyCode != CONTROL && keyCode != ALT) {
+    userInput = userInput + key;
   }
 }
 void getDate() {
@@ -325,7 +326,7 @@ void getDate() {
 void getTime() {
   stroke(255);
   textSize(50);
-  text(hour() + ":" + minute(), bg.height/2,bg.width/2);
+  text(hour() + ":" + minute(), bg.height/1.8,bg.width/1.8);
 }
 //Change the image to grayscale 
 void grayscale() {
@@ -357,18 +358,6 @@ void blueFilter() {
 }
 void colorFilter()
 {
-    if(key == 'r')
-    {
-      keychar2 = key;
-    }
-    if(key == 'g')
-    {
-      keychar2 = key;
-    }
-    if(key == 'b')
-    {
-      keychar2 = key;
-    }
     if(key == 'h')
     {
       keychar2 = key;
@@ -383,8 +372,44 @@ void colorFilter()
     }
   
   switch(keychar2){
-case '0':  
+case 'o':
+  clear();
+  image(bg2,0,0);
+  noTint();
+  break;
+case 'h':
   image(bg,0,0);
+  grayscale();
+  break;
+case 'j':
+  image(bg,0,0);
+  blackWhite();
+  break;
+  
+ }
+}
+void colorTint()
+{
+  if(key == 'r')
+    {
+      keychar2 = key;
+    }
+    if(key == 'g')
+    {
+      keychar2 = key;
+    }
+    if(key == 'b')
+    {
+      keychar2 = key;
+    }
+    if(key == 'o')
+    {
+      keychar2 = key;
+    }
+    switch(keychar2){
+case 'o':
+  clear();
+  image(bg2,0,0);
   noTint();
   break;
 case 'r':
@@ -399,105 +424,67 @@ case 'b':
   image(bg,0,0);
   blueFilter();
   break;
-case 'h':
-  image(bg,0,0);
-  grayscale();
-  break;
-case 'j':
-  image(bg,0,0);
-  blackWhite();
-  break;
-  
-  }
-   
-             
-             
-          }
-            
-            
-   
-  /*if(f == 1);
-    {
-      grayscale();
-    }
-    if(f == 2);
-    {
-      blackWhite();
-    }
-    if(f == 3);
-    {
-      redFilter();
-    }
-    if(f == 4);
-    {
-      blueFilter();
-    }
-    if(f == 5);
-    {
-      greenFilter();
-    }*/
     
-   
-
-
-class Undo {
-  // Number of currently available undo and redo snapshots
-  int undoSteps=0, redoSteps=0;  
-  CircImgCollection images;
+}
+            
+}   
+void Audio()
+{
+   if(key == 's' && !skrrt.isPlaying()) {
+    skrrt.loop();
+  }else if(key == 'p' && skrrt.isPlaying()){
+    skrrt.pause();
+    skrrt.rewind();
+  }
+}
+void star(float x, float y, float radius1, float radius2, int npoints) {
+  float angle = TWO_PI / npoints;
+  float halfAngle = angle/2.0;
+  beginShape();
+  for (float a = 0; a < TWO_PI; a += angle) {
+    float sx = x + cos(a) * radius2;
+    float sy = y + sin(a) * radius2;
+    vertex(sx, sy);
+    sx = x + cos(a+halfAngle) * radius1;
+    sy = y + sin(a+halfAngle) * radius1;
+    vertex(sx, sy);
+  }
+  endShape(CLOSE);
+}
+void android(float x, float y, float s){
+  scale(s);
+  beginShape();
+  noStroke(); // remove borders
+  fill(164,198,57); // android color
   
-  Undo(int levels) {
-    images = new CircImgCollection(levels);
-  }
-
-  public void takeSnapshot() {
-    undoSteps = min(undoSteps+1, images.amount-1);
-    // each time we draw we disable redo
-    redoSteps = 0;
-    images.next();
-    images.capture();
-  }
-  public void undo() {
-    if(undoSteps > 0) {
-      undoSteps--;
-      redoSteps++;
-      images.prev();
-      images.show();
-    }
-  }
-  public void redo() {
-    if(redoSteps > 0) {
-      undoSteps++;
-      redoSteps--;
-      images.next();
-      images.show();
-    }
-  }
+  arc(x, y, 280, 200, PI, TWO_PI); // hed 282 200
+  rect(x-140, y+12, 280, 235, 0,0,50,50); // bod
+  rect(x-200,y+10,50,150, 20); // left arm
+  rect(x+151,y+10,50,150, 20); // right arm
+  rect(x-87,y+180,50,150, 20); // left leg
+  rect(x+38,y+180,50,150, 20); // right leg
+  
+  pushMatrix();
+  translate(x-75,y-123);
+  rotate(PI/2.7); // rotate left antenna
+  rect(0,0,50,10,10); // left antenna
+  popMatrix();
+  
+  pushMatrix();
+  translate(x+80,y-120);
+  rotate(PI/2.7); 
+  rotate(PI/3.6); // rotate right antenna
+  rect(0,0,50,10,10); // right antenna
+  popMatrix();
+  
+  fill(255);                 //white fill
+  //rect(130, 200, 300, 10); // line seperating neck
+  circle(x-62, y-40, 25); // left eye
+  circle(x+58, y-40, 25); // right eye
+  
+  stroke(1);
+  endShape(CLOSE);
 }
 
-
-class CircImgCollection {
-  int amount, current;
-  PImage[] img;
-  CircImgCollection(int amountOfImages) {
-    amount = amountOfImages;
-
-    // Initialize all images as copies of the current display
-    img = new PImage[amount];
-    for (int i=0; i<amount; i++) {
-      img[i] = createImage(width, height, RGB);
-      img[i] = get();
-    }
-  }
-  void next() {
-    current = (current + 1) % amount;
-  }
-  void prev() {
-    current = (current - 1 + amount) % amount;
-  }
-  void capture() {
-    img[current] = get();
-  }
-  void show() {
-    image(img[current], 0, 0);
-  }
-}
+   
+  
